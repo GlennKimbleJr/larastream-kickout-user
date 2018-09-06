@@ -18,5 +18,5 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/admin/users/{user}/kick', 'KickoutController@update')->name('admin.users.kick');
+Route::put('/admin/users/{user}/kick', 'KickoutController@update')->name('admin.users.kick');
 Route::get('/admin/users/active', 'ActiveUsersController@index')->name('admin.users.active');

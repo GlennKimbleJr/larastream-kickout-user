@@ -10,5 +10,7 @@ class KickoutController extends Controller
     public function update(Request $request, User $user)
     {
         $user->kickOut();
+
+        return back();
     }
 }

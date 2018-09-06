@@ -3,22 +3,30 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Contracts\Auth\Guard as Auth;
+use Illuminate\Contracts\Cache\Repository as Cache;
 
 class CheckForKickout
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @return mixed
-     */
+    protected $auth;
+
+    protected $cache;
+
+    public function __construct(Auth $auth, Cache $cache)
+    {
+        $this->auth = $auth;
+
+        $this->cache = $cache;
+    }
+
     public function handle($request, Closure $next)
     {
-        if ($request->user() && cache()->pull('kickout-user-'.$request->user()->id)) {
-            auth()->logout();
+        $user = $request->user();
 
-            return redirect()->to('login');
+        if ($user && $this->cache->pull("kickout-user-{$user->id}")) {
+            $this->auth->logout();
+
+            return redirect()->to(route('login'));
         }
 
         return $next($request);
